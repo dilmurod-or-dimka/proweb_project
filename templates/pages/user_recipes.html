@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Статьи автора: {{ username }}
+{% endblock title %}
+
+{% block content %}
+
+<div class="mb-5">
+    <h3 class="text-center">Об авторе</h3>
+    <div class="d-flex gap-3">
+        <div class="col-3">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    Username: {{ user.username }}
+                </li>
+                <li class="list-group-item">
+                    Email: {{ user.email }}
+                </li>
+                <li class="list-group-item">
+                    Joined: {{ user.date_joined.date }}
+                </li>
+            </ul>
+        </div>
+        <div class="col-9">
+            <ul class="list-group">
+                <li class="list-group-item">
+                     Общее кол-во просмотров статей: {{ total_views }}
+                </li>
+                <li class="list-group-item">
+                    Общще кол-во комментариев статей: {{ total_comments }}
+                </li>
+                <li class="list-group-item">
+                    Общще кол-во статей: {{ total_recipes }}
+                </li>
+                <li class="list-group-item">
+                    Дни с момента регистрации: {{ days_left }}
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    {% for item in items %}
+    <div class="col-6">
+        <div class="card mb-3" style="max-width: 540px;">
+            <div class="row g-0">
+                <div class="col-md-12">
+                    {% if item.image %}
+                    <img src="{{ item.image.url }}" class="img-fluid rounded-start h-100" alt="...">
+                    {% else %}
+                    <div class="d-flex flex-column justify-content-center align-items-center h-100">
+                        No photo
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.title }}</h5>
+                        <p class="card-text">{{ item.description }}</p>
+                        <p class="card-text"><small class="text-muted">Создано: {{ item.created_at }}</small></p>
+                        <a href="{{ item.get_absolute_url }}" class="btn btn-dark">
+                            Подробнее
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Статья: {{ item.title }}
+{% endblock title %}
+
+
+{% block content %}
+<div class="card">
+    <div class="row g-0">
+        <div class="col-md-3">
+            {% if item.image %}
+            <img src="{{ item.image.url }}" class="img-fluid rounded-start h-100" alt="...">
+            {% else %}
+            <div class="d-flex flex-column justify-content-center align-items-center h-100">
+                No photo
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-md-9 d-flex">
+            <div class="card-body">
+                <h5 class="card-title">{{ item.title }}</h5>
+                <p class="card-text">{{ item.description }}</p>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        Название категории: <b>{{ item.category }}</b>
+                    </li>
+                    <li class="list-group-item">
+                        Автор статьи: <b>{{ item.author }}</b>
+                    </li>
+                    <li class="list-group-item">
+                        Кол-во просмотров: <b>{{ item.views }}</b>
+                    </li>
+                </ul>
+
+
+                <p class="card-text text-end"><small class="text-muted">Создано: {{ item.created_at }}</small></p>
+            </div>
+            {% if item.author == request.user or request.user.is_superuser %}
+            <div class="dropdown">
+                <button class="btn fs-5" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    ⋮
+                </button>
+                <ul class="dropdown-menu">
+
+                    <li><a class="dropdown-item" href="{% url 'update' item.pk %}">Изменить</a></li>
+
+                    <li><a class="dropdown-item" href="{% url 'delete' item.pk %}">Удалить</a></li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+<div class="mt-4">
+    {% if request.user.is_authenticated %}
+    <form action="" class="mb-4" method="post">
+        {% csrf_token %}
+
+        {{ form }}
+
+        <button class="btn btn-dark mt-3">Отправить</button>
+    </form>
+    {% else %}
+    <p>Оставлять коментарии могут только избранные понял да <a href="{% url 'login' %}">Войти в аккаунт</a></p>
+    {% endif %}
+
+    {% for comment in comments %}
+    <div class="card mb-3">
+        <div class="card-header d-flex align-items-center">
+            {{ comment.created_at }}
+            <div class="ms-auto">
+
+                <a href="{% url 'edit_comment' comment.pk %}" class="text-warning fs-5 text-decoration-none">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                <a href="{% url 'del_comment' comment.pk %}" class="text-danger fs-5 text-decoration-none ms-2">
+                    <i class="bi bi-trash3"></i>
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <blockquote class="blockquote mb-0">
+                <p>{{ comment.content }}</p>
+                <footer class="blockquote-footer"><cite title="{{ comment.author }}">{{ comment.author }}</cite>
+                </footer>
+            </blockquote>
+        </div>
+    </div>
+    {% empty %}
+    <h3>No comments.////</h3>
+    {% endfor %}
+
+</div>
+{% endblock content %}
